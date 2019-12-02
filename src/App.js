@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom';
 import {Router} from 'react-router';
 import LoadingIndicator from './common/LoadingIndicator';
-// import PrivateRoute from './common/PrivateRoute';
 import { getCurrentUser } from './util/APIUtils';
 import { ACCESS_TOKEN } from './constants/index';
 import {AppHeader} from "./common/AppHeader";
@@ -81,33 +80,31 @@ export default class App extends Component {
       return <LoadingIndicator />
     }
     return (
-        <div className="app-container">
-          <Router history={history}>
-            <Switch>
-              <AppHeader isAuthenticated={this.state.isAuthenticated}
-                         currentUser={this.state.currentUser}
-                         handleLogout={this.handleLogout}> </AppHeader>
-            </Switch>
-          </Router>
-          <div style={{minHeight: 65}} />
-          <div className="app-content">
-            <Router history={history}>
-              <div className="container">
-                <Switch>
-                  <Route exact path="/" render={(props) =><PollList isAuthenticated={this.state.isAuthenticated}
-                                                                         currentUser={this.state.currentUser} handleLogout={this.handleLogout} {...props} key={"pollList"} />}>
-                  </Route>
-                  <Route path="/login" render={(props) =><Login onLogin={this.handleLogin} {...props} />}/>
-                  <Route path="/signup" render={() => <Signup/>}/>
-                  <Route path="/users/:username"
-                         render={(props) => <Profile isAuthenticated={this.state.isAuthenticated} currentUser={this.state.currentUser} {...props} />}/>
-                  <PrivateRoute authenticated={this.state.isAuthenticated} path="/poll/new" component={NewPoll} />
-                  <Route render={() =><NotFound />}/>
-                </Switch>
-              </div>
-            </Router>
+        <Router history={history}>
+          <div style={{minHeight: 65}}>
+            <AppHeader isAuthenticated={this.state.isAuthenticated}
+                       currentUser={this.state.currentUser}
+                       handleLogout={this.handleLogout}
+                       className={"w-100 mx-auto"} > </AppHeader>
           </div>
-        </div>
+          <Switch>
+            <Route exact path="/"
+                   render={(props) =><PollList isAuthenticated={this.state.isAuthenticated}
+                                               currentUser={this.state.currentUser}
+                                               handleLogout={this.handleLogout}
+                                               {...props} key={"pollList"} />
+                          } />
+            <Route path="/login" render={(props) =><Login onLogin={this.handleLogin} {...props} />}/>
+            <Route path="/signup" render={() => <Signup/>}/>
+            <Route path="/users/:username"
+                   render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
+                                               currentUser={this.state.currentUser}
+                                               {...props} />
+                          } />
+            <PrivateRoute authenticated={this.state.isAuthenticated} path="/poll/new" component={NewPoll} />
+            <Route render={() =><NotFound />}/>
+          </Switch>
+        </Router>
     );
   }
 }
